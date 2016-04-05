@@ -156,7 +156,7 @@ public void autonomous(){
 		   }
 		   
 		   if(turnToAngle){
-			   if(turnController.onTarget()){
+			   if(!turnController.onTarget()){
 				   turnController.setSetpoint(angle);
 				   turnController.enable();
 			   } else {
