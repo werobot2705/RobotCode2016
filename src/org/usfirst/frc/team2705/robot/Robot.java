@@ -48,6 +48,7 @@ public class Robot extends SampleRobot implements PIDOutput {
 	public final int RIGHT_GOAL_ANGLE = 55;
 	public final int LEFT_GOAL_ANGLE = -55;
 	
+	private double autoSpeed = -.75;
 	// Gyro stuff?
 	private int angle;
 	private boolean turnToAngle = false;
@@ -120,18 +121,36 @@ public void autonomous(){
 		
 	    
     }else if(autoMode == "trump"){//drive past defense - low bar, drive-overs
-	    myDrive.arcadeDrive(-0.75, 0.0);
-	    myDrive2.arcadeDrive(-0.75, 0.0);
-	    Timer.delay(5.0); //4 for rock wall
+	   autoSpeed = -.75;
+	   turnController.setSetpoint(0);
+	   turnController.enable();
+	   long start = System.currentTimeMillis();
+	   while (System.currentTimeMillis() - start < 4500) {
+	   	myDrive.arcadeDrive(autoSpeed, turnController.get());
+	   	myDrive2.arcadeDrive(autoSpeed, turnController.get());
+	   }
+	    //myDrive.arcadeDrive(-0.75, 0.0);
+	    //myDrive2.arcadeDrive(-0.75, 0.0);
+	    //Timer.delay(5.0); //4 for rock wall
 	    myDrive.arcadeDrive(0.0, 0.0);
 	    myDrive2.arcadeDrive(0.0, 0.0);
+	    turnController.disable();
 	    
        }else if(autoMode == "moat"){//drive past defense - low bar, drive-overs
-    	   myDrive.arcadeDrive(-80.0, 0.0);
-    	   myDrive2.arcadeDrive(-80.0, 0.0);
-    	   Timer.delay(3.0); //4 for rock wall
+    	   autoSpeed = -.8;
+	   long start = System.currentTimeMillis();
+	    turnController.setSetpoint(0);
+	   turnController.enable();
+	   while (System.currentTimeMillis() - start < 2500) {
+	   	myDrive.arcadeDrive(autoSpeed, turnController.get());
+	   	myDrive2.arcadeDrive(autoSpeed, turnController.get());
+	   }
+    	   //myDrive.arcadeDrive(-80.0, 0.0);
+    	   //myDrive2.arcadeDrive(-80.0, 0.0);
+    	   //Timer.delay(3.0); //4 for rock wall
     	   myDrive.arcadeDrive(0.0, 0.0);
     	   myDrive2.arcadeDrive(0.0, 0.0);
+    	   turnController.disable();
        }
    }
    
@@ -194,9 +213,9 @@ public void autonomous(){
 @Override
 public void pidWrite(double output) {
 	// TODO Auto-generated method stub
-
-	   myDrive.arcadeDrive(turnController.get(), -turnController.get());
-	   myDrive2.arcadeDrive(turnController.get(), -turnController.get());
-	
+	if (operatorControl()) {
+	   myDrive.tankDrive(output, -output);
+	   myDrive2.tankDrive(output, -output);
+	}
 }
 }
