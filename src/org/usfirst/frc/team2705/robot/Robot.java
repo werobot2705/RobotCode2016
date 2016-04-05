@@ -156,13 +156,14 @@ public void autonomous(){
 		   }
 		   
 		   if(turnToAngle){
-			   turnController.setSetpoint(angle);
-			   turnController.enable();
-			   while(!turnController.onTarget()){
-				   myDrive.arcadeDrive(turnController.get(), -turnController.get());
-				   myDrive2.arcadeDrive(turnController.get(), -turnController.get());
+			   if(turnController.onTarget()){
+				   turnController.setSetpoint(angle);
+				   turnController.enable();
+			   } else {
+
+				   turnController.disable();
 			   }
-			   turnController.disable();
+			   
 		   }
  
 		   SmartDashboard.putBoolean("Ball Held Switch", ballHeldSwitch.get());
@@ -187,13 +188,9 @@ public void autonomous(){
 @Override
 public void pidWrite(double output) {
 	// TODO Auto-generated method stub
-	turnController.setSetpoint(angle);
-	   turnController.enable();
-	   while(!turnController.onTarget()){
-		   myDrive.arcadeDrive(turnController.get(), -turnController.get());
-		   myDrive2.arcadeDrive(turnController.get(), -turnController.get());
-	   }
-	   turnController.disable();
+
+	   myDrive.arcadeDrive(turnController.get(), -turnController.get());
+	   myDrive2.arcadeDrive(turnController.get(), -turnController.get());
 	
 }
 }
