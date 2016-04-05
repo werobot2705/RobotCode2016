@@ -213,7 +213,7 @@ public void autonomous(){
 @Override
 public void pidWrite(double output) {
 	// TODO Auto-generated method stub
-	if (operatorControl()) {
+	if (isOperatorControl()) {
 	   myDrive.tankDrive(output, -output);
 	   myDrive2.tankDrive(output, -output);
 	}
