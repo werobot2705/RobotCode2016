@@ -36,13 +36,16 @@ public class Robot extends SampleRobot implements PIDOutput {
 	public int dashAutoBool = 0;
 	CameraServer camera;
 	
+	public int turnToAngleTime = 3000;
+	public long startTime;
+	
 	public final int A_BUTTON = 1;
 	public final int Y_BUTTON = 4;
 	public final int RIGHT_STICK_PRESS = 10;
 	public final int LEFT_STICK_PRESS = 9;
 	public final int LEFT_BUMPER = 5;
 	public final int RIGHT_BUMPER = 6;
-	public final int RIGHT_GOAL_ANGLE = 30;
+	public final int RIGHT_GOAL_ANGLE = 55;
 	public final int LEFT_GOAL_ANGLE = 120;
 	
 	// Gyro stuff?
@@ -148,10 +151,12 @@ public void autonomous(){
 		   if(stick.getRawButton(LEFT_BUMPER)){
 			   angle = LEFT_GOAL_ANGLE;
 			   turnToAngle = true;
+			   startTime = System.currentTimeMillis();
 		   } else if(stick.getRawButton(RIGHT_BUMPER)){
 			   angle = RIGHT_GOAL_ANGLE;
 			   turnToAngle = true;
-		   } else {
+			   startTime = System.currentTimeMillis();
+		   } else if (System.currentTimeMillis() - startTime > turnToAngleTime){
 			   turnToAngle = false;
 		   }
 		   
