@@ -187,7 +187,13 @@ public void autonomous(){
 @Override
 public void pidWrite(double output) {
 	// TODO Auto-generated method stub
-	aaa look at this error
+	turnController.setSetpoint(angle);
+	   turnController.enable();
+	   while(!turnController.onTarget()){
+		   myDrive.arcadeDrive(turnController.get(), -turnController.get());
+		   myDrive2.arcadeDrive(turnController.get(), -turnController.get());
+	   }
+	   turnController.disable();
 	
 }
 }
