@@ -46,7 +46,7 @@ public class Robot extends SampleRobot implements PIDOutput {
 	public final int LEFT_BUMPER = 5;
 	public final int RIGHT_BUMPER = 6;
 	public final int RIGHT_GOAL_ANGLE = 55;
-	public final int LEFT_GOAL_ANGLE = 120;
+	public final int LEFT_GOAL_ANGLE = -55;
 	
 	// Gyro stuff?
 	private int angle;
