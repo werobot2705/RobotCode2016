@@ -108,70 +108,41 @@ public void autonomous(){
 	
 	if(autoSelect == 2){//default
 	   autoSpeed = -.75;
-	   turnController.setSetpoint(0);
 	   turnController.enable();
 	   driveAtAngle(0, autoSpeed, 4500);
-	}
 	    //myDrive.arcadeDrive(-0.75, 0.0);
 	    //myDrive2.arcadeDrive(-0.75, 0.0);
 	    //Timer.delay(5.0); //4 for rock wall
-	    myDrive.arcadeDrive(0.0, 0.0);
-	    myDrive2.arcadeDrive(0.0, 0.0);
-	    turnController.disable();
+	   turnController.disable();
 	    
     }else if(autoSelect == 3){//moat
         autoSpeed = -.8;
-	    long start = System.currentTimeMillis();
- 	    turnController.setSetpoint(0);
         turnController.enable();
-	    while (System.currentTimeMillis() - start < 2500) {
-	  	    myDrive.arcadeDrive(autoSpeed, turnController.get());
-	   	    myDrive2.arcadeDrive(autoSpeed, turnController.get());
-        }
+        driveAtAngle(0, autoSpeed, 2500);
         //myDrive.arcadeDrive(-80.0, 0.0);
     	//myDrive2.arcadeDrive(-80.0, 0.0);
     	//Timer.delay(3.0); //4 for rock wall
-    	myDrive.arcadeDrive(0.0, 0.0);
-    	myDrive2.arcadeDrive(0.0, 0.0);
     	turnController.disable();
     }else{//portcullis / low bar
     	autoSpeed = -.65;
-    	turnController.setSetpoint(0);
 		turnController.enable();
     	arm1.set(-1);
 		arm2.set(-1);
 		Timer.delay(0.7);
 		arm1.set(0);
 		arm2.set(0); 
-	    long start = System.currentTimeMillis();
-	    int firstWaitTime = 3000;
 	    if(autoSelect == 5){
-	 	   firstWaitTime = 5000;
+	    	driveAtAngle(0, autoSpeed, 5000);
+	    } else {
+	    	driveAtAngle(0, autoSpeed, 3000);
+		    arm1.set(1);
+			arm2.set(1);
+		    driveAtAngle(0, autoSpeed, 750);
+			arm1.set(0);
+		    arm2.set(0);
+			driveAtAngle(0, autoSpeed, 2000);
 	    }
 	    
-	    while (System.currentTimeMillis() - start < firstWaitTime) {
-	    	myDrive.arcadeDrive(autoSpeed, turnController.get());
-	    	myDrive2.arcadeDrive(autoSpeed, turnController.get());
-	    }
-	    
-	    if(autoSelect == 4){
-	 	   start = System.currentTimeMillis();
-	 	   while (System.currentTimeMillis() - start < 750) {
-        	   myDrive.arcadeDrive(-.4, turnController.get());
-    	       myDrive2.arcadeDrive(-.4, turnController.get());
-		       arm1.set(1);
-		       arm2.set(1);
-		   }
-		   arm1.set(0);
-		   arm2.set(0);
-		   start = System.currentTimeMillis();
-		   while (System.currentTimeMillis() - start < 2000) {
-		   	myDrive.arcadeDrive(autoSpeed, turnController.get());
-		   	myDrive2.arcadeDrive(autoSpeed, turnController.get());
-		   }
-		    myDrive.arcadeDrive(0.0, 0.0);
-		    myDrive2.arcadeDrive(0.0, 0.0);
-	    }
 //	    myDrive.arcadeDrive(-0.65, 0.0);
 //	    myDrive2.arcadeDrive(-0.65, 0.0);
 //	    Timer.delay(3.0);
@@ -185,8 +156,6 @@ public void autonomous(){
 //		myDrive.arcadeDrive(-0.65, 0.0);
 //		myDrive2.arcadeDrive(-0.65, 0.0);
 //		Timer.delay(3.0);
-	   
-    
     }
  }
    
