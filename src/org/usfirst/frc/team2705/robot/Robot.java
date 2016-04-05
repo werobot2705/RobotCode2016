@@ -162,8 +162,9 @@ public void autonomous(){
 			   } else {
 				   turnController.disable();
 				   turnToAngle = false;
-			   }
-			   
+			   } 
+		   } else {
+			   turnController.disable();
 		   }
  
 		   SmartDashboard.putBoolean("Ball Held Switch", ballHeldSwitch.get());
