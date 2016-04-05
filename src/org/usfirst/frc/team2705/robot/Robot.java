@@ -3,6 +3,7 @@ package org.usfirst.frc.team2705.robot;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -60,6 +61,9 @@ public class Robot extends SampleRobot implements PIDOutput {
 	
 	private static final double kToleranceDegree = 1.0f;
 	
+	 SendableChooser chooser;
+	 public static SendableChooser obstacleSelector;
+	
 	public void robotInit(){
 		arm1 = new Talon(0);
 		arm2 = new Talon(2);
@@ -83,6 +87,15 @@ public class Robot extends SampleRobot implements PIDOutput {
 		   turnController.setOutputRange(-1.0, 1.0);
 		   turnController.setAbsoluteTolerance(kToleranceDegree);
 		   turnController.setContinuous(true);
+		   
+		obstacleSelector = new SendableChooser();
+		   
+		obstacleSelector.addDefault("Default Obstacle", 2);
+	    obstacleSelector.addObject("Moat Obstacle", 3);
+	    obstacleSelector.addObject("Portcullis Obstacle", 4);
+	    obstacleSelector.addObject("Low Bar Obstacle", 5);
+	        
+	    SmartDashboard.putData("Obstacle Selector", obstacleSelector);
 	}
 
 public void autonomous(){
@@ -90,6 +103,8 @@ public void autonomous(){
     myDrive2.setSafetyEnabled(false);
     
 	String autoMode = "moat";
+	
+	int autoSelect = (int) obstacleSelector.getSelected();
 	
 	if(autoMode == "0"){//drive to defense
        myDrive.arcadeDrive(-.5, 0.0);
@@ -99,28 +114,53 @@ public void autonomous(){
         myDrive.arcadeDrive(0.0, 0.0);
         myDrive2.arcadeDrive(0.0, 0.0);
         
-    }else if(autoMode == "1"){//portcullis
+    }else if(autoSelect == 4){//portcullis
+    	autoSpeed = -.65;
+    	
+    	turnController.setSetpoint(0);
+		turnController.enable();
     	arm1.set(-1);
 		arm2.set(-1);
 		Timer.delay(0.7);
 		arm1.set(0);
-		arm2.set(0);
-	    myDrive.arcadeDrive(-0.65, 0.0);
-	    myDrive2.arcadeDrive(-0.65, 0.0);
-	    Timer.delay(3.0);
-	    myDrive.arcadeDrive(-0.4 , 0.0);
-	    myDrive2.arcadeDrive(-0.4, 0.0);
-	    arm1.set(1);
-		arm2.set(1);
-		Timer.delay(0.75);
-		arm1.set(0);
-		arm2.set(0);
-		myDrive.arcadeDrive(-0.65, 0.0);
-		myDrive2.arcadeDrive(-0.65, 0.0);
-		Timer.delay(3.0);
+		arm2.set(0); 
+		   long start = System.currentTimeMillis();
+		   while (System.currentTimeMillis() - start < 3000) {
+		   	myDrive.arcadeDrive(autoSpeed, turnController.get());
+		   	myDrive2.arcadeDrive(autoSpeed, turnController.get());
+		   }
+		   start = System.currentTimeMillis();
+		   while (System.currentTimeMillis() - start < 750) {
+		   	myDrive.arcadeDrive(-.4, turnController.get());
+		   	myDrive2.arcadeDrive(-.4, turnController.get());
+		   	arm1.set(1);
+		   	arm2.set(1);
+		   }
+		   arm1.set(0);
+		   arm2.set(0);
+		   start = System.currentTimeMillis();
+		   while (System.currentTimeMillis() - start < 2000) {
+		   	myDrive.arcadeDrive(autoSpeed, turnController.get());
+		   	myDrive2.arcadeDrive(autoSpeed, turnController.get());
+		   }
+		    myDrive.arcadeDrive(0.0, 0.0);
+		    myDrive2.arcadeDrive(0.0, 0.0);
+//	    myDrive.arcadeDrive(-0.65, 0.0);
+//	    myDrive2.arcadeDrive(-0.65, 0.0);
+//	    Timer.delay(3.0);
+//	    myDrive.arcadeDrive(-0.4 , 0.0);
+//	    myDrive2.arcadeDrive(-0.4, 0.0);
+//	    arm1.set(1);
+//		arm2.set(1);
+//		Timer.delay(0.75);
+//		arm1.set(0);
+//		arm2.set(0);
+//		myDrive.arcadeDrive(-0.65, 0.0);
+//		myDrive2.arcadeDrive(-0.65, 0.0);
+//		Timer.delay(3.0);
 		
 	    
-    }else if(autoMode == "trump"){//drive past defense - low bar, drive-overs
+    }else if(autoSelect == 2){//default
 	   autoSpeed = -.75;
 	   turnController.setSetpoint(0);
 	   turnController.enable();
@@ -136,7 +176,7 @@ public void autonomous(){
 	    myDrive2.arcadeDrive(0.0, 0.0);
 	    turnController.disable();
 	    
-       }else if(autoMode == "moat"){//drive past defense - low bar, drive-overs
+       }else if(autoSelect == 3){//moat
     	   autoSpeed = -.8;
 	   long start = System.currentTimeMillis();
 	    turnController.setSetpoint(0);
