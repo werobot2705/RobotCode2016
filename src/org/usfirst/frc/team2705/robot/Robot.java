@@ -110,12 +110,8 @@ public void autonomous(){
 	   autoSpeed = -.75;
 	   turnController.setSetpoint(0);
 	   turnController.enable();
-	   long start = System.currentTimeMillis();
-	   
-	   while (System.currentTimeMillis() - start < 4500) {
-	   	   myDrive.arcadeDrive(autoSpeed, turnController.get());
-	   	   myDrive2.arcadeDrive(autoSpeed, turnController.get());
-	   }
+	   driveAtAngle(0, autoSpeed, 4500);
+	}
 	    //myDrive.arcadeDrive(-0.75, 0.0);
 	    //myDrive2.arcadeDrive(-0.75, 0.0);
 	    //Timer.delay(5.0); //4 for rock wall
@@ -260,7 +256,7 @@ public void pidWrite(double output) {
   }
 
 
-public void driveAtAngle(double speed, double angle, int duration){
+public void driveAtAngle(double angle, double speed, int duration){
 	
 	long startTime = System.currentTimeMillis();
 	turnController.setSetpoint(angle);
