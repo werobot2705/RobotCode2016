@@ -8,12 +8,13 @@ import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 
 
-public class Robot extends SampleRobot {
+public class Robot extends SampleRobot implements PIDOutput {
 	RobotDrive myDrive, myDrive2;
 	Joystick stick;
 	CANTalon left, right, roller, left2,right2;
@@ -73,7 +74,7 @@ public class Robot extends SampleRobot {
 		// Buttons: A = 1; B = 2; X = 3; Y = 4; LB = 5; RB = 6; sel = 7; Start = 8; LT = 9; RT = 10
 		
 		AHRS ahrs = new AHRS(SPI.Port.kMXP);
-		turnController = new PIDController(kP, kI, kD, kF, Sensors.ahrs, this);
+		turnController = new PIDController(kP, kI, kD, kF, ahrs, this);
 		   turnController.setInputRange(-180.0f, 180.0f);
 		   turnController.setOutputRange(-1.0, 1.0);
 		   turnController.setAbsoluteTolerance(kToleranceDegree);
@@ -182,4 +183,11 @@ public void autonomous(){
 			   
 	   }
    	}
+
+@Override
+public void pidWrite(double output) {
+	// TODO Auto-generated method stub
+	aaa look at this error
+	
+}
 }
