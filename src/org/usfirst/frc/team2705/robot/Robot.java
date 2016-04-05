@@ -258,4 +258,19 @@ public void pidWrite(double output) {
 	   myDrive2.tankDrive(output, -output);
 	}
   }
+
+
+public void driveAtAngle(double speed, double angle, int duration){
+	
+	long startTime = System.currentTimeMillis();
+	turnController.setSetpoint(angle);
+	while (System.currentTimeMillis() - startTime < duration) {
+    	myDrive.arcadeDrive(speed, turnController.get());
+    	myDrive2.arcadeDrive(speed, turnController.get());
+    }
+	
+	myDrive.arcadeDrive(0, 0);
+	myDrive2.arcadeDrive(0, 0);
+}
+
 }
