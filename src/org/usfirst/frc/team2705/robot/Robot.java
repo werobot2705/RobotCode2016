@@ -160,8 +160,8 @@ public void autonomous(){
 				   turnController.setSetpoint(angle);
 				   turnController.enable();
 			   } else {
-
 				   turnController.disable();
+				   turnToAngle = false;
 			   }
 			   
 		   }
