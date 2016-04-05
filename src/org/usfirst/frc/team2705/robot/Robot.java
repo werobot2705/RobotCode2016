@@ -18,19 +18,19 @@ public class Robot extends SampleRobot {
 	Joystick stick;
 	CANTalon left, right, roller, left2,right2;
 	Talon hookA, hookB, upper, rollerArm, arm1, arm2;	
-	//CANTalon shooter;
 	Timer timer;
-	ArmRaise armRaise;
-	HookArm hookArm;
 	Shooter shooter;
-	MoveRollerArm moveRollerArm;
 	DigitalInput ballHeldSwitch;
 	double time;
 	double timeEnd; 
     public int ballHeld = 0;
     public double rollerArmSpeed = 0.5;
+    
+    //Extra gyro stuff done by other team members. Ignore
     Gyro gyro;
 	static final double Kp = 0.03;
+	//
+	
 	public boolean[] autonomous = {false, false, false, false, false};
 	public int dashAutoBool = 0;
 	CameraServer camera;
@@ -66,12 +66,18 @@ public class Robot extends SampleRobot {
 		myDrive2 = new RobotDrive(left2,right2);
 		stick = new Joystick(1);	//Left stick
 		shooter = new Shooter(999);
-		hookArm = new HookArm(9999);
 		ballHeldSwitch = new DigitalInput(0);
 		camera = CameraServer.getInstance();
 		camera.setQuality(20);
 		camera.startAutomaticCapture("cam0");
 		// Buttons: A = 1; B = 2; X = 3; Y = 4; LB = 5; RB = 6; sel = 7; Start = 8; LT = 9; RT = 10
+		
+		AHRS ahrs = new AHRS(SPI.Port.kMXP);
+		turnController = new PIDController(kP, kI, kD, kF, Sensors.ahrs, this);
+		   turnController.setInputRange(-180.0f, 180.0f);
+		   turnController.setOutputRange(-1.0, 1.0);
+		   turnController.setAbsoluteTolerance(kToleranceDegree);
+		   turnController.setContinuous(true);
 	}
 
 public void autonomous(){
@@ -136,11 +142,7 @@ public void autonomous(){
 		   Timer.delay(0.01);
 		   
 		   // more gyro stuff?
-		   turnController = new PIDController(kP, kI, kD, kF, Sensors.ahrs, this);
-		   turnController.setInputRange(-180.0f, 180.0f);
-		   turnController.setOutputRange(-1.0, 1.0);
-		   turnController.setAbsoluteTolerance(kToleranceDegree);
-		   turnController.setContinuous(true);
+		   
 		   
 		   if(stick.getRawButton(LEFT_BUMPER)){
 			   angle = LEFT_GOAL_ANGLE;
@@ -153,9 +155,9 @@ public void autonomous(){
 		   }
 		   
 		   if(turnToAngle){
+			   turnController.setSetpoint(angle);
+			   turnController.enable();
 			   while(!turnController.onTarget()){
-				   turnController.setSetpoint(angle);
-				   turnController.enable();
 				   myDrive.arcadeDrive(turnController.get(), -turnController.get());
 				   myDrive2.arcadeDrive(turnController.get(), -turnController.get());
 			   }
